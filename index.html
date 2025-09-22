@@ -22,13 +22,11 @@
         .prayer-img { width:100%; max-height:200px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
         .share-btn { background-color:#25D366; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; font-size:0.9em; margin-right:5px; }
         .share-btn:hover { background-color:#128C7E; }
-        .other-share-btn { background-color:#4a90e2; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; font-size:0.9em; }
-        .other-share-btn:hover { background-color:#357ABD; }
         footer { text-align:center; padding:15px; background-color:#f1f1f1; font-size:0.9em; }
         .ads-banner { position:fixed; bottom:0; left:0; width:100%; text-align:center; background-color:#f1f1f1; padding:10px 0; z-index:1000; box-shadow:0 -2px 5px rgba(0,0,0,0.3); }
         .ads-banner ins { display: block; height: 50px; }
         #adTitle { color:#666; font-size:0.9em; font-weight:normal; text-align:center; margin-bottom:5px; }
-        @media (max-width:480px) { .date-navigation button { padding:8px 12px; font-size:0.9em; } .prayer h2 { font-size:1em; } .prayer p { font-size:0.95em; } .share-btn, .other-share-btn { font-size:0.85em; padding:6px 10px; } .prayer-img { max-height:150px; } }
+        @media (max-width:480px) { .date-navigation button { padding:8px 12px; font-size:0.9em; } .prayer h2 { font-size:1em; } .prayer p { font-size:0.95em; } .share-btn { font-size:0.85em; padding:6px 10px; } .prayer-img { max-height:150px; } }
     </style>
 </head>
 <body>
@@ -47,8 +45,7 @@
             <h2 id="prayerTitle1">Título da Oração 1</h2>
             <img id="prayerImg1" src="imagens/oracao1.jpg" alt="Oração 1" class="prayer-img" loading="lazy">
             <p id="prayer1">Aqui vai a primeira oração do dia.</p>
-            <button class="share-btn" onclick="shareToWhatsapp('prayer1')">Compartilhe no WhatsApp</button>
-            <button class="other-share-btn" onclick="shareOther('prayer1', 'prayerImg1')">Outras Opções</button>
+            <button class="share-btn" onclick="sharePrayer('prayer1')">Compartilhe para abençoar outras pessoas</button>
         </div>
 
         <div class="prayer">
@@ -69,8 +66,7 @@
             <h2 id="prayerTitle2">Título da Oração 2</h2>
             <img id="prayerImg2" src="imagens/oracao2.jpg" alt="Oração 2" class="prayer-img" loading="lazy">
             <p id="prayer2">Aqui vai a segunda oração do dia.</p>
-            <button class="share-btn" onclick="shareToWhatsapp('prayer2')">Compartilhe no WhatsApp</button>
-            <button class="other-share-btn" onclick="shareOther('prayer2', 'prayerImg2')">Outras Opções</button>
+            <button class="share-btn" onclick="sharePrayer('prayer2')">Compartilhe para abençoar outras pessoas</button>
         </div>
     </main>
 
@@ -126,7 +122,7 @@
         function updatePrayers(dayOffset = 0) {
             currentDay = currentDay + dayOffset;
             const index = ((currentDay % prayers.length) + prayers.length) % prayers.length;
-
+            
             document.getElementById('prayerTitle1').innerText = prayers[index].title1;
             document.getElementById('prayerTitle2').innerText = prayers[index].title2;
             document.getElementById('prayer1').innerText = prayers[index].prayer1;
@@ -140,31 +136,21 @@
         document.getElementById('prevDay').addEventListener('click', ()=>{ updatePrayers(-1); });
         document.getElementById('nextDay').addEventListener('click', ()=>{ updatePrayers(1); });
 
-        // Compartilhamento específico para WhatsApp
-        function shareToWhatsapp(prayerId) {
+        // Nova função de compartilhamento que envia apenas texto e link
+        function sharePrayer(prayerId){
             const text = document.getElementById(prayerId).innerText;
             const previewText = text.split('. ')[0] + ".\n\nConfira a oração completa aqui: " + window.location.href;
-            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(previewText)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        // Compartilhamento para outras redes usando o API do navegador
-        function shareOther(prayerId, imgId) {
-            const text = document.getElementById(prayerId).innerText;
-            const previewText = text.split('. ')[0] + ".\n\nConfira a oração completa aqui: " + window.location.href;
-            const imgSrc = document.getElementById(imgId).src;
 
             if (navigator.share) {
-                fetch(imgSrc).then(res => res.blob()).then(blob => {
-                    const file = new File([blob], "imagem.jpg", { type: blob.type });
-                    navigator.share({
-                        title: 'Oração do Dia',
-                        text: previewText,
-                        files: [file]
-                    }).catch(console.error);
+                // Compartilha usando o API nativa, mas apenas com texto e URL
+                navigator.share({
+                    title: 'Oração do Dia',
+                    text: previewText
                 }).catch(console.error);
             } else {
-                alert(`Compartilhe sua oração:\n${previewText}`);
+                // Fallback para navegadores que não suportam o navigator.share
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(previewText)}`;
+                window.open(whatsappUrl, '_blank');
             }
         }
         
