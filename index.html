@@ -139,7 +139,8 @@
         // Nova função de compartilhamento que envia apenas texto e link
         function sharePrayer(prayerId){
             const text = document.getElementById(prayerId).innerText;
-            const previewText = text.split('. ')[0] + ".\n\nConfira a oração completa aqui: " + window.location.href;
+            // AQUI ESTÁ A MUDANÇA: O texto de compartilhamento agora é mais persuasivo.
+            const previewText = text.split('. ')[0] + ".\n\nLeia a mensagem que Deus tem para você hoje. " + window.location.href;
 
             if (navigator.share) {
                 // Compartilha usando o API nativa, mas apenas com texto e URL
