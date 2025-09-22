@@ -123,7 +123,6 @@
             currentDay = currentDay + dayOffset;
             const index = ((currentDay % prayers.length) + prayers.length) % prayers.length;
 
-            // Atualiza o conteúdo da página
             document.getElementById('prayerTitle1').innerText = prayers[index].title1;
             document.getElementById('prayerTitle2').innerText = prayers[index].title2;
             document.getElementById('prayer1').innerText = prayers[index].prayer1;
@@ -131,29 +130,24 @@
             document.getElementById('prayerImg1').src = prayers[index].img1;
             document.getElementById('prayerImg2').src = prayers[index].img2;
 
-            // Atualiza a URL sem recarregar a página
             window.history.pushState({day: index}, '', `?dia=${index}`);
         }
 
-        // Lida com a navegação do usuário
         document.getElementById('prevDay').addEventListener('click', ()=>{ updatePrayers(-1); });
         document.getElementById('nextDay').addEventListener('click', ()=>{ updatePrayers(1); });
 
-        // Compartilhar oração - agora com o link correto
         function sharePrayer(prayerId, imgId){
             const text = document.getElementById(prayerId).innerText;
             const previewText = text.split('. ')[0] + ".\n\nConfira a oração completa aqui: " + window.location.href;
             const imgSrc = document.getElementById(imgId).src;
 
             if(navigator.share){
-                // Verifica se o navegador pode compartilhar arquivos (incluindo imagens)
                 if (navigator.canShare && navigator.canShare({ files: [new File([], "image.jpg", { type: "image/jpeg" })] })) {
                     fetch(imgSrc).then(res=>res.blob()).then(blob=>{
                         const file = new File([blob],"imagem.jpg",{ type: blob.type });
                         navigator.share({ title:'Oração do Dia', text: previewText, files:[file] }).catch(console.error);
                     });
                 } else {
-                    // Se não pode compartilhar a imagem, compartilha apenas o texto e o link
                     navigator.share({ title:'Oração do Dia', text: previewText }).catch(console.error);
                 }
             } else {
@@ -162,8 +156,6 @@
             }
         }
 
-        // Inicia o aplicativo na oração correta
-        // Lê o parâmetro 'dia' da URL se ele existir, ou usa 0
         const urlParams = new URLSearchParams(window.location.search);
         const dayFromUrl = parseInt(urlParams.get('dia'));
         if (!isNaN(dayFromUrl) && dayFromUrl >= 0 && dayFromUrl < prayers.length) {
@@ -171,7 +163,6 @@
         }
         updatePrayers(0);
 
-        // Service Worker
         if('serviceWorker' in navigator){
             navigator.serviceWorker.register('sw.js').then(()=>console.log('Service Worker registrado')).catch(console.error);
         }
