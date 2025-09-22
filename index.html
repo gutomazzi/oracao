@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oração do Dia</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a90e2">
+    <style>
+        /* Reset básico */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Arial', sans-serif; background:#f9f9f9; color:#333; display:flex; flex-direction:column; min-height:100vh; padding-bottom:140px; }
+        header { background:#4a90e2; color:white; padding:20px; text-align:center; font-size:1.5em; font-weight:bold; }
+        #installBtn { display:none; margin:10px auto; padding:10px 20px; background-color:#4a90e2; color:white; border:none; border-radius:5px; cursor:pointer; font-size:1em; }
+        main { flex:1; padding:20px; }
+        .date-navigation { display:flex; justify-content:space-between; margin-bottom:20px; }
+        .date-navigation button { background:#4a90e2; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:1em; }
+        .date-navigation button:hover { background:#357ABD; }
+        .prayer { background:white; padding:20px; border-radius:10px; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.1); position:relative; }
+        .prayer h2 { font-size:1.2em; margin-bottom:10px; color:#4a90e2; }
+        .prayer p { font-size:1em; line-height:1.6; margin-bottom:10px; }
+        .prayer-img { width:100%; max-height:200px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
+        .share-btn { background-color:#25D366; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; font-size:0.9em; margin-right:5px; }
+        .share-btn:hover { background-color:#128C7E; }
+        footer { text-align:center; padding:15px; background-color:#f1f1f1; font-size:0.9em; }
+        .ads-banner { position:fixed; bottom:0; left:0; width:100%; text-align:center; background-color:#4a90e2; padding:20px 0; z-index:1000; box-shadow:0 -2px 5px rgba(0,0,0,0.3); }
+        @media (max-width:480px) { .date-navigation button { padding:8px 12px; font-size:0.9em; } .prayer h2 { font-size:1em; } .prayer p { font-size:0.95em; } .share-btn { font-size:0.85em; padding:6px 10px; } .prayer-img { max-height:150px; } }
+    </style>
+</head>
+<body>
+
+    <header>Oração do Dia</header>
+
+    <button id="installBtn">Instalar no celular 📲</button>
+
+    <main>
+        <div class="date-navigation">
+            <button id="prevDay">← Dia Anterior</button>
+            <button id="nextDay">Dia Seguinte →</button>
+        </div>
+
+        <div class="prayer">
+            <h2 id="prayerTitle1">Título da Oração 1</h2>
+            <img id="prayerImg1" src="imagens/oracao1.jpg" alt="Oração 1" class="prayer-img">
+            <p id="prayer1">Aqui vai a primeira oração do dia.</p>
+            <button class="share-btn" onclick="sharePrayer('prayer1','prayerImg1')">Compartilhe para abençoar outras pessoas</button>
+        </div>
+
+        <div class="prayer">
+            <h2 id="prayerTitle2">Título da Oração 2</h2>
+            <img id="prayerImg2" src="imagens/oracao2.jpg" alt="Oração 2" class="prayer-img">
+            <p id="prayer2">Aqui vai a segunda oração do dia.</p>
+            <button class="share-btn" onclick="sharePrayer('prayer2','prayerImg2')">Compartilhe para abençoar outras pessoas</button>
+        </div>
+    </main>
+
+    <footer>Feito com ❤️ para momentos de oração</footer>
+
+    <div class="ads-banner">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXX" data-ad-slot="YYYYYYYYYY" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <script>
+        // PWA - botão instalar
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+        installBtn.addEventListener('click', () => {
+            installBtn.style.display = 'none';
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+        });
+
+        // Navegação das orações
+        let currentDay = 0;
+        const prayers = [
+            // Dia 1
+            { title1:"Oração da Gratidão", prayer1:"Senhor, agradeço pelo dom da vida e pelo novo amanhecer. Que meus olhos enxerguem a beleza em cada detalhe e meu coração seja repleto de gratidão. Guia meus passos para que eu possa espalhar amor, esperança e paz por onde passar. Que eu jamais me esqueça das Tuas bênçãos.", img1:"imagens/nascer-do-sol.png", title2:"Oração pela Paz Interior", prayer2:"Deus amado, acalma meu coração diante das incertezas e ansiedades. Que a serenidade habite em minha mente e que a confiança em Ti seja maior que qualquer medo. Dá-me a sabedoria para enfrentar as dificuldades sem perder a fé. Inspira-me a viver cada momento com tranquilidade.", img2:"imagens/lago-tranquilo.png" },
+            // Dia 2
+            { title1:"Oração pela Família", prayer1:"Pai querido, abençoa minha família, protege nossos lares e fortalece nossos laços de amor. Que cada palavra dita entre nós seja cheia de respeito e carinho. Dá-nos paciência nos conflitos, união nas dificuldades e alegria em todos os dias. Que o Teu amor seja a base de nossa convivência.", img1:"imagens/familia-unida.jpg", title2:"Oração pela Saúde", prayer2:"Senhor da vida, entrego em Tuas mãos minha saúde e a daqueles que amo. Concede-nos força física, equilíbrio emocional e paz espiritual. Dá sabedoria aos médicos e profissionais que cuidam dos doentes. Que a Tua presença seja remédio que fortalece corpo e alma.", img2:"imagens/maos-oracao-hospital.jpg" },
+            // Dia 3
+            { title1:"Oração pelo Trabalho", prayer1:"Deus fiel, guia-me em minhas tarefas de hoje. Que cada esforço seja abençoado e cada decisão seja tomada com discernimento. Dá-me coragem para enfrentar desafios e humildade para aprender sempre. Que meu trabalho seja instrumento de bênção para mim e para os outros.", img1:"imagens/mesa-trabalho-luz.png", title2:"Oração pela Manhã", prayer2:"Pai amado, inicio este dia colocando tudo em Tuas mãos. Que minhas palavras edifiquem, minhas atitudes inspirem e minha fé permaneça firme. Conduz-me com segurança e protege-me dos perigos. Dá-me alegria em cada passo e esperança em cada desafio.", img2:"imagens/sol-nascente-montanhas.png" },
+            // Dia 4
+            { title1:"Oração da Noite", prayer1:"Senhor, agradeço pelo dia vivido, pelos momentos de aprendizado e pelas bênçãos recebidas. Entrego-Te meus medos, preocupações e sonhos. Que eu possa descansar em paz, renovando minhas forças para o amanhã. Cobre-me com Teu cuidado e dá-me um sono tranquilo.", img1:"imagens/ceu-estrelado.png", title2:"Oração pelo Perdão", prayer2:"Deus misericordioso, reconheço minhas falhas e peço perdão pelos meus erros. Ensina-me a perdoar aqueles que me feriram, assim como Tu me perdoas. Liberta meu coração do rancor e enche-me de compaixão. Que eu aprenda a amar como Cristo nos ensinou.", img2:"imagens/cruz-iluminada.jpg" },
+            // Dia 5
+            { title1:"Oração pela Esperança", prayer1:"Senhor, quando tudo parecer difícil, renova minha esperança em Ti. Dá-me forças para acreditar que dias melhores virão e que nada está perdido para quem confia em Tua providência. Que minha fé seja luz que guia meus passos.", img1:"imagens/caminho-iluminado.jpg", title2:"Oração pela Amizade", prayer2:"Pai, abençoa os amigos que me acompanham na jornada da vida. Que sejamos apoio uns para os outros, compartilhando alegrias e superando tristezas juntos. Que nossas conversas tragam paz e nossas atitudes reflitam amor verdadeiro.", img2:"imagens/pessoas-maos-dadas.jpg" },
+            // Dia 6
+            { title1:"Oração pela Sabedoria", prayer1:"Deus de bondade, concede-me sabedoria para tomar boas decisões. Que meus pensamentos sejam claros, minhas palavras edificantes e minhas escolhas alinhadas à Tua vontade. Ajuda-me a aprender com cada experiência e a crescer com humildade.", img1:"imagens/livros-abertos-luz.jpg", title2:"Oração pela Coragem", prayer2:"Senhor, fortalece meu coração para não desistir diante das dificuldades. Dá-me coragem para enfrentar meus medos e confiança para seguir adiante. Que eu nunca perca a fé, mesmo quando o caminho parecer escuro.", img2:"imagens/pessoa-trilha.jpg" },
+            // Dia 7
+            { title1:"Oração pela Alegria", prayer1:"Pai amado, enche meu coração de alegria verdadeira. Que eu saiba sorrir nas pequenas coisas e ser motivo de felicidade para os que me cercam. Que minha vida seja testemunho de que a Tua presença traz luz e esperança.", img1:"imagens/crianca-sorrindo.jpg", title2:"Oração pela Proteção", prayer2:"Senhor, cobre-me com Teu cuidado e afasta de mim todo perigo. Guarda meus passos, protege minha família e ilumina os caminhos que devo seguir. Que a Tua presença seja meu escudo em todos os momentos.", img2:"imagens/estrada-luz.jpg" },
+            // Dia 8
+            { title1:"Oração pelo Amor", prayer1:"Deus é amor, e em Ti encontro meu refúgio. Ensina-me a amar sem esperar retorno, a perdoar sem guardar mágoas e a servir com alegria. Que minha vida seja reflexo do Teu amor no mundo.", img1:"imagens/coracao-maos.jpg", title2:"Oração pela Fé", prayer2:"Senhor, aumenta minha fé. Mesmo diante das tempestades, ajuda-me a confiar no Teu poder e na Tua promessa de nunca me abandonar. Que eu viva cada dia sustentado pela certeza da Tua presença.", img2:"imagens/biblia-aberta.jpg" },
+            // Dia 9
+            { title1:"Oração pela Paciência", prayer1:"Pai bondoso, ensina-me a esperar o tempo certo das coisas. Que eu não me perca na pressa, mas confie no Teu agir perfeito. Dá-me calma para lidar com as pessoas e serenidade nas provações.", img1:"imagens/ampulheta.jpg", title2:"Oração pelo Futuro", prayer2:"Deus de amor, coloco meu futuro em Tuas mãos. Sei que tens planos maiores do que posso imaginar. Guia meus sonhos, fortalece meus passos e prepara caminhos de bênção e paz.", img2:"imagens/estrada-longa.jpg" },
+            // Dia 10
+            { title1:"Oração pelo Presente", prayer1:"Senhor, ajuda-me a viver o hoje com gratidão. Que eu não fique preso ao passado nem ansioso pelo amanhã. Ensina-me a aproveitar cada momento como presente de Tua bondade.", img1:"imagens/flor-campo.jpg", title2:"Oração pelo Entendimento", prayer2:"Pai, abre meu coração para compreender os outros. Que eu seja paciente com suas falhas e generoso em minhas palavras. Dá-me empatia para ouvir e compaixão para servir.", img2:"imagens/duas-pessoas-conversando.jpg" },
+            // Dia 11
+            { title1:"Oração pela Bondade", prayer1:"Senhor, que minha vida reflita Tua bondade. Que eu possa ajudar quem precisa, estender a mão ao caído e ser luz para os que caminham na escuridão. Que meus gestos revelem Teu amor.", img1:"imagens/mao-ajudando.jpg", title2:"Oração pelo Consolo", prayer2:"Deus de misericórdia, consola os corações aflitos e dá descanso aos que sofrem. Usa-me como instrumento de paz para levar esperança e carinho aos que choram.", img2:"imagens/abraco-recompensante.jpg" },
+            // Dia 12
+            { title1:"Oração pela Luz", prayer1:"Senhor, ilumina minha mente e meu coração. Que Tua luz dissipe toda dúvida e incerteza. Guia-me com clareza para que eu não me perca em meio às sombras.", img1:"imagens/vela-acesa.jpg", title2:"Oração pela Justiça", prayer2:"Deus justo, ajuda-me a agir com integridade em todas as situações. Que eu não ceda à injustiça e lute sempre pela verdade. Dá-me coragem para ser justo em minhas atitudes.", img2:"imagens/balanca-justica.jpg" },
+            // Dia 13
+            { title1:"Oração pelo Dia de Trabalho", prayer1:"Pai amado, abençoa este dia de esforço. Que cada atividade seja feita com dedicação e cada resultado seja fruto do bem. Dá-me ânimo para não desistir e serenidade para aprender com os erros.", img1:"imagens/ferramentas-mesa.jpg", title2:"Oração pela Noite de Descanso", prayer2:"Senhor, ao encerrar este dia, coloco em Ti minha confiança. Leva embora o cansaço, cura as feridas da alma e dá-me sono tranquilo. Que eu acorde renovado para Te servir.", img2:"imagens/cama-arrumada.jpg" },
+            // Dia 14
+            { title1:"Oração pela Esperança em Tempos Difíceis", prayer1:"Deus de amor, mesmo quando tudo parece desmoronar, ajuda-me a acreditar na Tua providência. Que eu não perca a fé e encontre esperança em cada novo amanhecer.", img1:"imagens/raios-sol-nuvens.jpg", title2:"Oração pelo Amor ao Próximo", prayer2:"Senhor, dá-me olhos para enxergar a necessidade dos outros. Que eu saiba estender a mão e praticar a solidariedade. Que minhas atitudes sejam reflexo do Teu amor.", img2:"imagens/voluntarios-ajudando.jpg" },
+            // Dia 15
+            { title1:"Oração pela Superação", prayer1:"Pai, dá-me força para enfrentar as dificuldades sem desanimar. Que eu aprenda com cada prova e saia mais forte de cada batalha. Que Tua presença seja meu sustento.", img1:"imagens/montanhista-cume.jpg", title2:"Oração pela Vida", prayer2:"Senhor, agradeço pela dádiva da vida. Que eu saiba cuidar do meu corpo, da minha mente e do meu espírito. Que cada dia seja vivido com propósito e gratidão.", img2:"imagens/natureza-exuberante.jpg" }
+        ];
+        function updatePrayers() {
+            const index = ((currentDay % prayers.length) + prayers.length) % prayers.length;
+            document.getElementById('prayerTitle1').innerText = prayers[index].title1;
+            document.getElementById('prayerTitle2').innerText = prayers[index].title2;
+            document.getElementById('prayer1').innerText = prayers[index].prayer1;
+            document.getElementById('prayer2').innerText = prayers[index].prayer2;
+            document.getElementById('prayerImg1').src = prayers[index].img1;
+            document.getElementById('prayerImg2').src = prayers[index].img2;
+        }
+        document.getElementById('prevDay').addEventListener('click', ()=>{ currentDay--; updatePrayers(); });
+        document.getElementById('nextDay').addEventListener('click', ()=>{ currentDay++; updatePrayers(); });
+        updatePrayers();
+
+        // Compartilhar oração - imagem + preview + link
+        function sharePrayer(prayerId, imgId){
+            const text = document.getElementById(prayerId).innerText;
+            const previewText = text.split('. ')[0] + ".\n\nConfira a oração completa aqui: " + window.location.href;
+            const imgSrc = document.getElementById(imgId).src;
+
+            if(navigator.share && navigator.canShare && navigator.canShare({ files: [] })){
+                fetch(imgSrc).then(res=>res.blob()).then(blob=>{
+                    const file = new File([blob],"imagem.jpg",{ type: blob.type });
+                    navigator.share({ title:'Oração do Dia', text: previewText, files:[file] }).catch(console.error);
+                });
+            } else if(navigator.share){
+                navigator.share({ title:'Oração do Dia', text: previewText }).catch(console.error);
+            } else {
+                const whatsapp = `https://api.whatsapp.com/send?text=${encodeURIComponent(previewText)}`;
+                const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(previewText)}`;
+                const twitter = `https://twitter.com/intent/tweet?text=${encodeURIComponent(previewText)}`;
+                alert(`Compartilhe sua oração:\nWhatsApp: ${whatsapp}\nFacebook: ${facebook}\nTwitter: ${twitter}`);
+            }
+        }
+
+        // Service Worker
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('sw.js').then(()=>console.log('Service Worker registrado')).catch(console.error);
+        }
+    </script>
+
+</body>
+</html>
